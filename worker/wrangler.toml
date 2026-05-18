@@ -1,0 +1,25 @@
+name = "basescanner-worker"
+main = "src/index.js"
+compatibility_date = "2024-09-23"
+compatibility_flags = ["nodejs_compat"]
+
+# Variables d'environnement publiques (les secrets vont dans le dashboard Cloudflare)
+[vars]
+ENVIRONMENT = "production"
+
+# Namespace KV pour stocker tokens, settings, watchlist
+# Remplace l'ID ci-dessous après avoir créé ton namespace avec : wrangler kv:namespace create "BASESCANNER_KV"
+[[kv_namespaces]]
+binding = "KV"
+id = "2e802a1a7e844da58b49b24bd9e15ea1"
+preview_id = "4feda4711d5b4ef69b55b9a1b212f31d"
+
+# Déclencheur cron : toutes les minutes (minimum offre gratuite Cloudflare)
+# Le Worker lance 2 scans par invocation (à 0s et 30s) → scan effectif toutes les 30s
+[triggers]
+crons = ["*/1 * * * *"]
+
+# Limites offre gratuite Cloudflare Workers :
+# - 100 000 requêtes/jour
+# - 10ms CPU par requête (fetch + scheduled)
+# - KV : 100 000 lectures/jour, 1 000 écritures/jour

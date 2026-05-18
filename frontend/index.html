@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+
+    <!-- Viewport mobile — pas de zoom utilisateur pour une expérience app-like -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+
+    <!-- PWA / Safari iOS -->
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="BaseScan" />
+    <link rel="apple-touch-icon" href="/icon-192.png" />
+
+    <!-- Thème couleur (barre de navigation Android) -->
+    <meta name="theme-color" content="#050810" />
+
+    <!-- SEO / description -->
+    <meta name="description" content="Scanner de nouveaux tokens sur Base Chain — détection en temps réel avec analyse de sécurité" />
+
+    <!-- Manifest PWA -->
+    <link rel="manifest" href="/manifest.json" />
+
+    <!-- Polices Google Fonts — Syne (titres) + Space Mono (chiffres/adresses) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+
+    <title>BaseScan — Token Scanner</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>
