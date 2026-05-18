@@ -10,7 +10,7 @@
  * Limites DexScreener free tier : ~300 req/min → très largement suffisant ici.
  */
 
-import { getSeenTokens, setSeenTokens } from './kv.js';
+import { getSeenTokens, setSeenTokens, addRejectedToken } from './kv.js';
 import { analyzeToken } from './scorer.js';
 
 const DEXSCREENER_BASE = 'https://api.dexscreener.com';
@@ -218,8 +218,17 @@ export async function runScan(env) {
         const analysis = await analyzeToken(token.address, goplusKey);
 
         if (!analysis.pass) {
-          // Token rejeté (critère éliminatoire ou score < 75)
           console.log(`[Scanner] Rejeté ${token.symbol} (${token.address.slice(0, 8)}…) — ${analysis.reason || `score ${analysis.score}`}`);
+
+          // Persistance dans la clé KV "rejected_tokens" pour l'onglet Rejetés du frontend
+          await addRejectedToken(kv, {
+            ...token,
+            score:       analysis.score,
+            details:     analysis.details,
+            holderCount: analysis.holderCount,
+            reason:      analysis.reason || null,   // raison éliminatoire si applicable
+            rejectedAt:  Date.now(),
+          });
           continue;
         }
 

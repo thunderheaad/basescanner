@@ -24,6 +24,7 @@ import {
   getWatchlist,
   addToWatchlist,
   removeFromWatchlist,
+  getRejectedTokens,
 } from './kv.js';
 
 // ─────────────────────────────────────────────────────────────
@@ -124,6 +125,13 @@ async function handleRequest(request, env, ctx) {
       const address = deleteMatch[1];
       await removeFromWatchlist(env.KV, address);
       return json({ success: true });
+    }
+
+    // ── GET /api/rejected ─────────────────────────────────────
+    // Tokens détectés mais refusés (score < 75 ou critère éliminatoire)
+    if (path === '/api/rejected' && method === 'GET') {
+      const rejected = await getRejectedTokens(env.KV);
+      return json(rejected);
     }
 
     // ── POST /api/scan ────────────────────────────────────────────

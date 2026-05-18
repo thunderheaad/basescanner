@@ -173,3 +173,38 @@ export async function setSeenTokens(kv, seen, ttlMs = 5 * 60 * 1000) {
   }
   await kv.put('seen_tokens', JSON.stringify(cleaned));
 }
+
+// ─────────────────────────────────────────────────────────────
+// TOKENS REJETÉS
+// Clé KV : "rejected_tokens" — tableau des 50 derniers refusés
+// ─────────────────────────────────────────────────────────────
+
+/**
+ * Récupère les tokens rejetés depuis KV.
+ * @param {KVNamespace} kv
+ * @returns {Promise<Array>}
+ */
+export async function getRejectedTokens(kv) {
+  const raw = await kv.get('rejected_tokens');
+  return raw ? JSON.parse(raw) : [];
+}
+
+/**
+ * Ajoute un token rejeté dans KV (max 50, sans doublons).
+ * @param {KVNamespace} kv
+ * @param {object} token — { address, name, symbol, score, reason, details, rejectedAt, ... }
+ */
+export async function addRejectedToken(kv, token) {
+  const rejected = await getRejectedTokens(kv);
+
+  const address = token.address?.toLowerCase();
+  if (!address) return;
+
+  // Ne pas dupliquer si déjà présent
+  if (rejected.some(t => t.address === address)) return;
+
+  rejected.unshift({ ...token, address });
+
+  // Garder seulement les 50 derniers
+  await kv.put('rejected_tokens', JSON.stringify(rejected.slice(0, 50)));
+}
